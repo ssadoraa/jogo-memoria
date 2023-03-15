@@ -2,8 +2,10 @@
 let firstCard = '';
 let secondCard = '';
 
-// Pegando o grid, que é onde vão ficar os cards
+// Pegando elementos da tela de game
 const grid = document.querySelector('.grid');
+const spanPlayer = document.querySelector('.player');
+const timer = document.querySelector('.timer');
 
 // Lista contendo todas as imagens que serão utilizadas (colocar mesmo nome do arq)
 const characters = [
@@ -33,8 +35,10 @@ const checkedEndGame = () => {
     const disabledCards = document.querySelectorAll('.disabled-card');
 
     // Procura todos os elementos que possui a classe e verifica se é igua a 20
-    if (disabledCards.length === 20)
-        alert('Parabéns!! Você venceu o jogo');
+    if (disabledCards.length === 20){
+        clearInterval(this.loop); // Para o tempo
+        alert(`Parabéns ${spanPlayer.innerHTML}!! Seu tempo foi de ${timer.innerHTML} segundos`);
+    }
 }
 
 // Função para verificar se as cartas clicadas são iguais
@@ -106,6 +110,16 @@ const createCard = (character) => {
     return card;
 }
 
+// Função que dá start to timer do jogo
+const startTime = () => {
+    // Cria um loop para ir atualizando o cronometro
+    this.loop = setInterval(() => {
+        // Pega span que contém o timer e vai acrescentando 1 enquanto o jogador não vencer
+        const currentTime = +timer.innerHTML;
+        timer.innerHTML = currentTime + 1;
+    }, 1000);
+}
+
 // Função para carregar o jogo, gerar tudo
 const loadGame = () => {
     // Array para duplicar o array dos personagens
@@ -122,4 +136,11 @@ const loadGame = () => {
     });
 }
 
-loadGame();
+// Executa quando a janela tiver sido executada
+window.onload = () => {
+    // Recupera o nome digitado no login e exibe no span criado acima das cartas
+    spanPlayer.innerHTML = localStorage.getItem('player');
+
+    startTime();
+    loadGame();
+}
